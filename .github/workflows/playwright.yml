@@ -17,24 +17,26 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      # Build the C# Project
+      # Intram in folderul proiectului si construim codul
       - name: Build project
+        working-directory: ./PlaywrightTests
         run: dotnet build
 
-      # Install Playwright browsers and dependencies for the built project
-      # Note: Ensure the path matches your project's output folder
+      # Instalam browserele Playwright folosind executabilul generat
       - name: Ensure browsers are installed
+        working-directory: ./PlaywrightTests
         run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
 
-      # Execute the NUnit tests
+      # Executam testele NUnit
       - name: Run Playwright tests
+        working-directory: ./PlaywrightTests
         run: dotnet test
 
-      # Upload test results (optional, but highly recommended)
+      # Salvam rapoartele in caz de esec sau succes
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: test-results
-          path: TestResults/
+          path: PlaywrightTests/TestResults/
           retention-days: 30

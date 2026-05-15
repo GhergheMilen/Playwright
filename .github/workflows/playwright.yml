@@ -17,26 +17,24 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      # Intram in folderul proiectului si construim codul
+      # Construim proiectul (fara working-directory, deoarece este in radacina)
       - name: Build project
-        working-directory: ./PlaywrightTests
         run: dotnet build
 
-      # Instalam browserele Playwright folosind executabilul generat
+      # Instalam browserele Playwright
+      # Verificam daca executabilul este in bin/Debug/net8.0/
       - name: Ensure browsers are installed
-        working-directory: ./PlaywrightTests
         run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
 
-      # Executam testele NUnit
+      # Executam testele
       - name: Run Playwright tests
-        working-directory: ./PlaywrightTests
         run: dotnet test
 
-      # Salvam rapoartele in caz de esec sau succes
+      # Salvam rezultatele
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: test-results
-          path: PlaywrightTests/TestResults/
+          path: TestResults/
           retention-days: 30
